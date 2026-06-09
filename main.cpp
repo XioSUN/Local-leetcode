@@ -231,9 +231,9 @@ void set_ops_xio() {
     ms.insert(9);
     ms.insert(2);
     ms.insert(6);
-    if (ms.count(2) != 0)
+    if (ms.count(1) != 0)
     {
-        ms.erase(2);
+        ms.erase(1);
     }
 }
 
@@ -253,6 +253,50 @@ void map_ops() {
     unordered_map<string, int> ump;  // O(1) 查找
 }
 
+void map_ops_xio() {
+    // map：<string, int>，插入{"def", 2}，查找"abc"并删除
+    map<string, int> mp;
+    mp.insert({"def", 2});
+    if (mp.count("def") != 0)
+    {
+        cout << "found 'def' with: " << mp["def"] << endl;
+        mp.erase("def");
+    }
+    if (mp.count("adc") != 0)
+    {
+        cout << "found 'abc'" << endl;
+    }
+    mp.insert({"cde", 9});
+
+    int s = mp.size();
+    cout << "map size: " << s << endl;
+
+    for (auto& [k,v]: mp)
+    {
+        cout << "key:" << k << ", value:" << v << endl;
+    }
+
+    for (auto& i: mp)
+    {
+        cout << "key:" << i.first << ", value:" << i.second << endl;
+    }
+
+    // unordered_map: 
+    unordered_map<string, int> ump;
+    ump.insert({"adc", 1});
+    // ump.insert({"adc", 2});  无法修改value
+    ump["adc"] = 2;
+    ump.insert({"bc", 4});
+
+    if (ump.find("adc") != ump.end()) {
+        cout << "found 'abc' with " << ump["adc"] << endl;  // 若key adc在使用前未被定义，将在使用中value默认初始化为0，不符合预期
+    }
+
+    if (ump.find("abc") == ump.end()) {
+        cout << "DONT found 'abc'" << endl;
+    }
+}
+
 // ─── pair / tuple ───────────────────────────────────
 void pair_ops() {
     pair<int, int> p = {1, 2};
@@ -265,6 +309,27 @@ void pair_ops() {
     });
 }
 
+void pair_ops_xio() {
+    // pair：初始化{1,2}并访问、修改
+    pair<int, int> pr = {1, 2};
+    pr.first = pr.first + pr.second == 3? 3: 0;
+    pr.second = pr.first + pr.second == 3? 0: 3;
+
+    // pair排序：默认使用first，自定义使用second
+    vector<pair<int, int>> vpr = {{5, 4}, {1, 2}, {2, 3}, {3, 4}};
+    sort(vpr.begin(), vpr.end());
+    sort(vpr.begin(), vpr.end(), [&](pair<int, int> pa, pair<int, int> pb){
+        return pa.second > pb.second;
+    });
+
+    for (auto& i: vpr)
+    {
+        if (i.first > 2) {
+            cout << "GOT YOU!" << endl;
+        }
+    }
+}
+
 // ─── bitset ─────────────────────────────────────────
 void bitset_ops() {
     bitset<32> bs(5);          // 000...0101
@@ -272,6 +337,26 @@ void bitset_ops() {
     bs.test(0);                // 第 0 位
     bs.set(1); bs.reset(1); bs.flip(1);
     bs.to_string(); bs.to_ulong();
+}
+
+void bitset_ops_xio() { // 依赖头文件 bitset
+    // 二进制显示：十进制5转换为二进制
+    // 分析1的个数
+    // 设置第二位
+    // 重置第二位
+    // 翻转第二位
+    bitset<32> bt = 5;
+    cout << bt.count() << endl;
+    cout << bt[1] << endl;
+    bt.set(1);
+    bt.reset(1);
+    bt.flip(1);
+    cout << bt[1] << endl;
+
+    // 转换为字符串并打印
+    // 转换为十进制并打印
+    cout << bt.to_string() << endl;
+    cout << bt.to_ulong() << endl;
 }
 
 // ─── <algorithm> 常用 ───────────────────────────────
@@ -302,16 +387,66 @@ void algo_ops() {
     shuffle(v.begin(), v.end(), rng);
 }
 
+void algo_ops_xio() {
+    // 初始化vector为{5,3,1,4,2}
+    // 排序并倒置=倒置并排序
+    vector<int> v = {5,3,1,4,2};
+    sort(v.begin(), v.end());
+    sort(v.begin(), v.end(), greater<>());
+    sort(v.begin(), v.end());
+    sort(v.begin(), v.end(), [](int a, int b){
+        return a > b;
+    });
+
+    // 找出最小、最大的元素
+    int a = *min_element(v.begin(), v.end());
+    int b = *max_element(v.begin(), v.end());
+
+    // 计算总和
+    int sum = accumulate(v.begin(), v.end(), 0);
+
+    // 数组中查找：两种方式，计数和遍历
+    if (count(v.begin(), v.end(),  1) != 0)
+    {
+        cout << "FOUND 1 with num: " << count(v.begin(), v.end(), 1) << endl;
+    }
+
+    if (find(v.begin(), v.end(), 2) != v.end())
+    {
+        cout << "FOUND 2" << endl;
+    }
+
+    // 以特定value填充数组
+    fill(v.begin(), v.end(), 5);
+
+    v = {5,3,1,4,2};    // 重新初始化
+    // 交换数组元素
+    swap(v[1], v[2]);
+    
+    // 遍历的牛刀
+    while(next_permutation(v.begin(), v.end())) //  排列组合遍历完赋成字典序最小排列
+    {
+        cout << "still HAVING permutation" << endl;
+    }
+
+    // 循环生成全排列:
+    // sort(v.begin(), v.end());
+    // do { ... } while (next_permutation(v.begin(), v.end()));
+
+    // 使用shuffle进行随机打乱
+    mt19937 gen(43);    // 我种下一个种子，终于长出了果实
+    shuffle(v.begin(), v.end(), gen);
+}
+
 // ─── <numeric> ──────────────────────────────────────
 void numeric_ops() {
     vector<int> a = {1, 2, 3}, b = {4, 5, 6};
 
-    __gcd(12, 8);          // 4 (C++17 前)
-    // gcd(12, 8);         // C++17
-    // lcm(12, 8);         // 24, C++17
+    int a = gcd(12, 8);         // C++17
+    int b = lcm(12, 8);         // 24, C++17
 
     // 内积
-    [[maybe_unused]] int dot = inner_product(a.begin(), a.end(), b.begin(), 0);
+    int dot = inner_product(a.begin(), a.end(), b.begin(), 0);
 
     // 前缀和 (原地)
     partial_sum(a.begin(), a.end(), a.begin());
@@ -321,6 +456,6 @@ int main() {
     io_speedup();
     cout << "STL playground ready.\n";
 
-    set_ops_xio();
+    algo_ops_xio();
     return 0;
 }
