@@ -1,4 +1,23 @@
+// GCC 环境使用 bits/stdc++.h；Apple clang 等无该头文件的环境退回到逐个包含
+#if __has_include(<bits/stdc++.h>)
 #include <bits/stdc++.h>
+#else
+#include <algorithm>
+#include <bitset>
+#include <deque>
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <numeric>
+#include <queue>
+#include <random>
+#include <set>
+#include <stack>
+#include <string>
+#include <utility>
+#include <vector>
+#endif
 using namespace std;
 
 /*
@@ -442,8 +461,8 @@ void algo_ops_xio() {
 void numeric_ops() {
     vector<int> a = {1, 2, 3}, b = {4, 5, 6};
 
-    int a = gcd(12, 8);         // C++17
-    int b = lcm(12, 8);         // 24, C++17
+    [[maybe_unused]] int g = gcd(12, 8);   // C++17
+    [[maybe_unused]] int l = lcm(12, 8);   // 24, C++17
 
     // 内积
     int dot = inner_product(a.begin(), a.end(), b.begin(), 0);

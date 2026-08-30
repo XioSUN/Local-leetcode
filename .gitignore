@@ -1,3 +1,7 @@
 main
 *.o
 *.out
+
+# IDE / build artifacts
+.idea/
+cmake-build-debug/
